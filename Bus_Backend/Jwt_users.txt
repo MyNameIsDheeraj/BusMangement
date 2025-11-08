@@ -1,0 +1,20 @@
+Admin
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNzYyMjEwNDMwLCJleHAiOjE3NjIyMTQwMzAsIm5iZiI6MTc2MjIxMDQzMCwianRpIjoiSTFFWTk1eXZ6MFQ5ZlRHdSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.dfxUF4gPG6kpkFC0RSomCTxFo2LJfSEPRpFtaWVZzwg","token_type":"bearer","expires_in":3600,"user":{"name":"Admin User","email":"admin@example.com","role_id":1,"updated_at":"2025-11-03T22:53:50.000000Z","created_at":"2025-11-03T22:53:50.000000Z","id":1,"role":{"id":1,"name":"admin"}},"role":"admin"}
+
+Teacher
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNzYyMjEwNDMxLCJleHAiOjE3NjIyMTQwMzEsIm5iZiI6MTc2MjIxMDQzMSwianRpIjoiNzZSQmU4RUpRWnpaSlF4SyIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.i6XcVusKQWcEAsihWzMwa3oTCJ6PaRgqaoLopCSbSS8","token_type":"bearer","expires_in":3600,"user":{"name":"Teacher User","email":"teacher@example.com","role_id":2,"updated_at":"2025-11-03T22:53:50.000000Z","created_at":"2025-11-03T22:53:50.000000Z","id":2,"role":{"id":2,"name":"teacher"}},"role":"teacher"}
+
+Parent
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNzYyMjEwNDMxLCJleHAiOjE3NjIyMTQwMzEsIm5iZiI6MTc2MjIxMDQzMSwianRpIjoiSEZOeU5ibUdvTUNWamliSCIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.re2BXBZ724vuc9brlVnpxVEd_pwCI_bQRZKvgZM98Tw","token_type":"bearer","expires_in":3600,"user":{"name":"Parent User","email":"parent@example.com","role_id":3,"updated_at":"2025-11-03T22:53:51.000000Z","created_at":"2025-11-03T22:53:51.000000Z","id":3,"role":{"id":3,"name":"parent"}},"role":"parent"}
+
+Student
+
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNzYyMjEwNDMyLCJleHAiOjE3NjIyMTQwMzIsIm5iZiI6MTc2MjIxMDQzMiwianRpIjoieG41ZDBVWk5zQ2tIRUFSbyIsInN1YiI6IjQiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.MHBkNI-e7dh1OLm0a9q37PHenyyza-JRuQf79MRfTfc","token_type":"bearer","expires_in":3600,"user":{"name":"Dheeraj S","email":"student@example.com","role_id":4,"updated_at":"2025-11-03T22:53:52.000000Z","created_at":"2025-11-03T22:53:52.000000Z","id":4,"role":{"id":4,"name":"student"}},"role":"student"}
+
+Driver
+
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNzYyMjEwNDMzLCJleHAiOjE3NjIyMTQwMzMsIm5iZiI6MTc2MjIxMDQzMywianRpIjoiRWFwdkM1OUprUFdSSXRaaiIsInN1YiI6IjUiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.0l7pfI6EKcf_rzLvQQULh544HYrSJq7uvOjD8YX_lN0","token_type":"bearer","expires_in":3600,"user":{"name":"Driver User","email":"driver@example.com","role_id":5,"updated_at":"2025-11-03T22:53:52.000000Z","created_at":"2025-11-03T22:53:52.000000Z","id":5,"role":{"id":5,"name":"driver"}},"role":"driver"}
+
+Cleaner
+
+{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL3JlZ2lzdGVyIiwiaWF0IjoxNzYyMjEwNDMzLCJleHAiOjE3NjIyMTQwMzMsIm5iZiI6MTc2MjIxMDQzMywianRpIjoidGx5b2hTaEJIQmlaY0JXZyIsInN1YiI6IjYiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.Ut87S7BpdkP7blWOERK3sXHjbbev7JJfgsQ9hIdg460","token_type":"bearer","expires_in":3600,"user":{"name":"Cleaner User","email":"cleaner@example.com","role_id":6,"updated_at":"2025-11-03T22:53:53.000000Z","created_at":"2025-11-03T22:53:53.000000Z","id":6,"role":{"id":6,"name":"cleaner"}},"role":"cleaner"}

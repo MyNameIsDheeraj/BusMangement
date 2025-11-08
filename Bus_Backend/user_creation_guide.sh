@@ -1,0 +1,181 @@
+#!/bin/bash
+
+# Bus Management System - Complete User Registration cURL Examples
+# This script demonstrates how to create users of all types in the system
+
+echo "=========================================="
+echo "Bus Management System - User Creation Examples"
+echo "=========================================="
+
+echo ""
+echo "Before running these commands, make sure the application is running:"
+echo "php artisan serve"
+echo ""
+
+echo "=========================================="
+echo "1. REGISTER USERS OF ALL TYPES"
+echo "=========================================="
+
+echo ""
+echo "Admin User:"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"name\": \"System Admin\", \"email\": \"admin@school.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 1}'"
+echo ""
+
+echo "Teacher User:"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"name\": \"Ms. Johnson\", \"email\": \"teacher@school.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 2}'"
+echo ""
+
+echo "Parent User:"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"name\": \"Parent Guardian\", \"email\": \"parent@school.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 3}'"
+echo ""
+
+echo "Student User:"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"name\": \"Student User\", \"email\": \"student@school.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 4}'"
+echo ""
+
+echo "Driver User:"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"name\": \"Bus Driver\", \"email\": \"driver@school.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 5}'"
+echo ""
+
+echo "Cleaner User:"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"name\": \"Bus Cleaner\", \"email\": \"cleaner@school.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 6}'"
+echo ""
+
+echo "=========================================="
+echo "2. LOGIN EXAMPLES (Get JWT Tokens)"
+echo "=========================================="
+
+echo ""
+echo "Login as Admin:"
+echo "curl -X POST http://localhost:8000/api/v1/login \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"email\": \"admin@school.edu\", \"password\": \"password123\"}'"
+echo ""
+
+echo "Login as Teacher:"
+echo "curl -X POST http://localhost:8000/api/v1/login \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Accept: application/json\" \\"
+echo "  -d '{\"email\": \"teacher@school.edu\", \"password\": \"password123\"}'"
+echo ""
+
+echo "=========================================="
+echo "3. EXAMPLES WITH AUTHENTICATION TOKENS"
+echo "=========================================="
+
+echo ""
+echo "# After getting JWT token, use it in Authorization header like this:"
+echo "# Authorization: Bearer YOUR_JWT_TOKEN"
+echo ""
+
+echo "View current user info:"
+echo "curl -X GET http://localhost:8000/api/v1/me \\"
+echo "  -H \"Authorization: Bearer YOUR_JWT_TOKEN\""
+echo ""
+
+echo "=========================================="
+echo "4. CREATE ADDITIONAL RECORDS (ADMIN REQUIRED)"
+echo "=========================================="
+
+echo ""
+echo "# After getting admin JWT token, create related records:"
+echo ""
+
+echo "Create Class:"
+echo "curl -X POST http://localhost:8000/api/v1/classes \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Authorization: Bearer ADMIN_JWT_TOKEN\" \\"
+echo "  -d '{\"class\": \"Grade 10A\", \"academic_year\": \"2025-2026\"}'"
+echo ""
+
+echo "Create Bus:"
+echo "curl -X POST http://localhost:8000/api/v1/buses \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Authorization: Bearer ADMIN_JWT_TOKEN\" \\"
+echo "  -d '{\"reg_no\": \"BUS-001\", \"capacity\": 50, \"status\": \"active\"}'"
+echo ""
+
+echo "Create Student Profile (after creating user and class):"
+echo "curl -X POST http://localhost:8000/api/v1/students \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -H \"Authorization: Bearer ADMIN_JWT_TOKEN\" \\"
+echo "  -d '{\"user_id\": USER_ID, \"class_id\": CLASS_ID, \"admission_no\": \"STU001\", \"address\": \"Student Address\", \"bus_service_active\": true, \"academic_year\": \"2025-2026\", \"dob\": \"2010-01-01\"}'"
+echo ""
+
+echo "=========================================="
+echo "5. ROLE-BASED ACCESS EXAMPLES"
+echo "=========================================="
+
+echo ""
+echo "# Admin can access all endpoints:"
+echo "curl -X GET http://localhost:8000/api/v1/users \\"
+echo "  -H \"Authorization: Bearer ADMIN_JWT_TOKEN\""
+echo ""
+
+echo "# Teacher can access their students:"
+echo "curl -X GET http://localhost:8000/api/v1/teachers/me/students \\"
+echo "  -H \"Authorization: Bearer TEACHER_JWT_TOKEN\""
+echo ""
+
+echo "# Parent can access their children:"
+echo "curl -X GET http://localhost:8000/api/v1/parents/me/students \\"
+echo "  -H \"Authorization: Bearer PARENT_JWT_TOKEN\""
+echo ""
+
+echo "# Driver can access their assigned route information:"
+echo "curl -X GET http://localhost:8000/api/v1/buses \\"
+echo "  -H \"Authorization: Bearer DRIVER_JWT_TOKEN\""
+echo ""
+
+echo "=========================================="
+echo "6. COMPLETE WORKFLOW EXAMPLE"
+echo "=========================================="
+
+echo ""
+echo "# 1. Create an admin user"
+echo "curl -X POST http://localhost:8000/api/v1/register \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -d '{\"name\": \"Initial Admin\", \"email\": \"initial@admin.edu\", \"password\": \"password123\", \"password_confirmation\": \"password123\", \"role_id\": 1}'"
+echo ""
+
+echo "# 2. Login as admin to get JWT token"
+echo "curl -X POST http://localhost:8000/api/v1/login \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -d '{\"email\": \"initial@admin.edu\", \"password\": \"password123\"}'"
+echo ""
+
+echo "# 3. Use admin token to create remaining users and data"
+echo "# (Replace ADMIN_TOKEN with the JWT token from step 2)"
+echo ""
+
+echo "# 4. Login as created users to test role-based access"
+echo ""
+
+echo "=========================================="
+echo "NOTES:"
+echo "=========================================="
+echo "- Role IDs are: 1=admin, 2=teacher, 3=parent, 4=student, 5=driver, 6=cleaner"
+echo "- Always include 'Accept: application/json' header for API responses"
+echo "- Non-public endpoints require JWT token in Authorization header"
+echo "- Admin privileges required for creating most data records"
+echo "- Make sure to run php artisan migrate:fresh --seed to set up the database"
+echo "- Use your actual server address instead of http://localhost:8000 if different"
