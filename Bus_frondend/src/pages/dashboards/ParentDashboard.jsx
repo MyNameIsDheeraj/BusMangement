@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { formatDate, formatCurrency } from '../../utils/helpers';
+import { formatCurrency } from '../../utils/helpers';
 
 const ParentDashboard = () => {
   const [children, setChildren] = useState([]);
@@ -109,12 +110,12 @@ const ParentDashboard = () => {
                         </div>
                       </div>
                       <div className="ml-2 flex-shrink-0 space-x-2">
-                        <a
-                          href={`/parent/children/${child.id}`}
+                        <Link
+                          to={`/parent/children/${child.id}`}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                         >
                           View Details
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -130,27 +131,27 @@ const ParentDashboard = () => {
       <div className="mt-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <a
-            href="/parent/children"
+          <Link
+            to="/parent/children"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">View Children</div>
             <div className="text-sm text-gray-500 mt-1">View your children's information</div>
-          </a>
-          <a
-            href="/parent/payments"
+          </Link>
+          <Link
+            to="/parent/payments"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Payments</div>
             <div className="text-sm text-gray-500 mt-1">View and make payments</div>
-          </a>
-          <a
-            href="/parent/attendances"
+          </Link>
+          <Link
+            to="/parent/attendances"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Attendance</div>
             <div className="text-sm text-gray-500 mt-1">View attendance records</div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

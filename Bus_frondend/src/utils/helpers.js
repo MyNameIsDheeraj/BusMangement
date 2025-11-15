@@ -93,3 +93,18 @@ export const canAccessResource = (user, resource, context) => {
   return false;
 };
 
+// Check if user has a specific permission
+export const hasPermission = (user, permission) => {
+  if (!user) return false;
+  // Admin has all permissions
+  if (isAdmin(user)) return true;
+
+  // Permissions could be present directly on user.permissions or on user.role.permissions
+  const perms = user.permissions || user.role?.permissions || [];
+
+  // Normalize structure: permissions may be array of strings or objects with 'name'
+  const names = perms.map((p) => (typeof p === 'string' ? p : p?.name)).filter(Boolean);
+  return names.includes(permission);
+};
+
+

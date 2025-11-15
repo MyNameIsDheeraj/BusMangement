@@ -16,3 +16,18 @@ code {
     monospace;
 }
 
+/* hide scrollbar for elements with .no-scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* small polish for top nav and sidebar */
+.top-nav-title {
+  letter-spacing: -0.5px;
+}
+

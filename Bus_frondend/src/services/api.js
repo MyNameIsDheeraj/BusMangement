@@ -1,6 +1,13 @@
 import axios from 'axios';
 import { API_BASE_URL, STORAGE_KEYS } from '../utils/constants';
 
+// Global function to handle redirects - will be set by React app
+let redirectHandler = null;
+
+export const setRedirectHandler = (handler) => {
+  redirectHandler = handler;
+};
+
 // Create axios instance for authenticated requests
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -80,10 +87,13 @@ api.interceptors.response.use(
         localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.USER);
-        const currentPath = window.location.pathname;
-        if (currentPath !== '/login' && !currentPath.includes('/login')) {
-          window.location.href = '/login';
+        // Only use redirect handler - don't fall back to window.location.href
+        // The redirect handler will be set by a component that has access to React Router
+        if (redirectHandler) {
+          redirectHandler('/login');
         }
+        // If no redirect handler is available, the ProtectedRoute will handle navigation
+        // when it detects that the user is no longer authenticated
         return Promise.reject(error);
       }
 
@@ -109,15 +119,18 @@ api.interceptors.response.use(
       try {
         console.log('Attempting to refresh access token...');
         
-        // Get the expired access token from storage
+        // Get both tokens from storage
         const expiredToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+        const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+        
         if (!expiredToken) {
           throw new Error('No access token found for refresh');
         }
         
-        // Send the expired token in Authorization header for refresh
-        // JWT library refreshes using the expired access token itself
-        const response = await authApi.post('/refresh', {}, {
+        // Try to refresh the token
+        const response = await authApi.post('/refresh', {
+          refresh_token: refreshToken
+        }, {
           headers: {
             'Authorization': `Bearer ${expiredToken}`
           }
@@ -170,15 +183,11 @@ api.interceptors.response.use(
           localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
           localStorage.removeItem(STORAGE_KEYS.USER);
           
-          // Only redirect if we're not already on login page
-          const currentPath = window.location.pathname;
-          if (currentPath !== '/login' && !currentPath.includes('/login')) {
-            // Use a small delay and check again to avoid redirect loops
-            setTimeout(() => {
-              if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
-              }
-            }, 100);
+          // The React ProtectedRoute will handle the navigation to login
+          // when isAuthenticated becomes false, rather than using window.location.href
+          // But we also want to trigger the redirect if possible
+          if (redirectHandler) {
+            redirectHandler('/login');
           }
         } else {
           // For network errors or server errors, don't logout
@@ -211,6 +220,7 @@ export const apiService = {
   // Users
   getUsers: (params) => api.get('/users', { params }),
   getUser: (id) => api.get(`/users/${id}`),
+  getAvailableStudentUsers: (params) => api.get('/users/available-students', { params }),
   createUser: (data) => api.post('/users', data),
   updateUser: (id, data) => api.put(`/users/${id}`, data),
   deleteUser: (id) => api.delete(`/users/${id}`),

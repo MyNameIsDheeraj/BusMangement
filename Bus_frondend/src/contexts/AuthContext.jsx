@@ -1,6 +1,23 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import { STORAGE_KEYS } from '../utils/constants';
+
+// Helper function to decode JWT token and check if it's expired
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(base64));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return true;
+  }
+};
 
 const AuthContext = createContext(null);
 
@@ -17,12 +34,31 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Normalize user shape helper (ensure `role` object exists if backend returned role_id)
+  const normalizeUser = (u) => {
+    if (!u) return u;
+    const userCopy = { ...u };
+    if (!userCopy.role && userCopy.role_id) {
+      // coerce role id to number when possible
+      const rid = Number(userCopy.role_id);
+      userCopy.role = { id: Number.isNaN(rid) ? userCopy.role_id : rid, name: userCopy.role_name || null };
+    } else if (userCopy.role && userCopy.role.id) {
+      // ensure numeric id if possible
+      const rid = Number(userCopy.role.id);
+      userCopy.role.id = Number.isNaN(rid) ? userCopy.role.id : rid;
+    }
+    if (!userCopy.permissions && userCopy.role?.permissions) {
+      userCopy.permissions = userCopy.role.permissions;
+    }
+    return userCopy;
+  };
+
   // Logout function - defined early to avoid dependency issues
-  const logout = async () => {
+  const logout = async (silent = false) => {
     try {
       const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-      if (token) {
-        // Only call logout API if we have a token
+      if (token && !silent) {
+        // Only call logout API if we have a token and aren't doing a silent logout
         try {
           await apiService.logout();
         } catch (error) {
@@ -50,25 +86,63 @@ export const AuthProvider = ({ children }) => {
 
       if (storedUser && token) {
         try {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
-          setIsAuthenticated(true);
-          // Don't verify token on initial load to avoid immediate logout on network issues
-          // Token validation will be handled by API calls and interceptors
+          const rawUser = JSON.parse(storedUser);
+          // Normalize user shape: ensure user.role exists when backend returns role_id
+          const normalizeUser = (u) => {
+            if (!u) return u;
+            const userCopy = { ...u };
+            if (!userCopy.role && userCopy.role_id) {
+              userCopy.role = { id: userCopy.role_id, name: userCopy.role_name || null };
+            }
+            // ensure permissions array is present (can be on role or user)
+            if (!userCopy.permissions && userCopy.role?.permissions) {
+              userCopy.permissions = userCopy.role.permissions;
+            }
+            return userCopy;
+          };
+
+          const userData = normalizeUser(rawUser);
+          
+          // Check if token is expired before using it
+          if (isTokenExpired(token)) {
+            console.log('Token expired, attempting refresh...');
+            try {
+              // Try to refresh the token using apiService.refresh (API wrapper)
+              const response = await apiService.refresh(token);
+              const data = response.data;
+              const access_token = data?.access_token || data?.token || data?.accessToken;
+              if (access_token) {
+                console.log('Token refreshed successfully');
+                localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, access_token);
+                // Update stored user if provided
+                if (data.user) {
+                  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+                }
+                setUser(userData);
+                setIsAuthenticated(true);
+                return;
+              }
+            } catch (refreshError) {
+              console.error('Token refresh failed:', refreshError);
+              await logout(true);
+              return;
+            }
+          } else {
+            setUser(userData);
+            setIsAuthenticated(true);
+          }
         } catch (error) {
-          // Failed to parse user data
-          console.error('Error parsing user data:', error);
-          localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-          localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-          localStorage.removeItem(STORAGE_KEYS.USER);
-          setUser(null);
-          setIsAuthenticated(false);
+          // Failed to parse user data or other error
+          console.error('Error loading user data:', error);
+          await logout(true);
         }
       }
-      setLoading(false);
     };
 
-    loadUser();
+    loadUser().finally(() => {
+      // Ensure loading is set to false only after the async operation completes
+      setLoading(false);
+    });
   }, []);
 
   // Login function
@@ -81,7 +155,8 @@ export const AuthProvider = ({ children }) => {
 
       // Handle different response structures
       const access_token = data.access_token || data.token;
-      const userData = data.user || data;
+  const userDataRaw = data.user || data;
+  const userData = normalizeUser(userDataRaw);
 
       if (!access_token) {
         console.error('No access token in login response:', data);
@@ -91,10 +166,10 @@ export const AuthProvider = ({ children }) => {
       // Store token and user data
       // Note: JWT library uses the expired access token itself for refresh,
       // so we don't need a separate refresh token
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, access_token);
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
+  localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, access_token);
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
 
-      setUser(userData);
+  setUser(userData);
       setIsAuthenticated(true);
 
       return { success: true, user: userData };
@@ -112,7 +187,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Update user data
-  const updateUser = (userData) => {
+  const updateUser = (userDataRaw) => {
+    const userData = normalizeUser(userDataRaw);
     setUser(userData);
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
   };
@@ -121,17 +197,41 @@ export const AuthProvider = ({ children }) => {
   const getCurrentUser = async () => {
     try {
       const response = await apiService.getMe();
-      const userData = response.data;
-      updateUser(userData);
-      return userData;
+  const userData = normalizeUser(response.data);
+  updateUser(userData);
+  return userData;
     } catch (error) {
       console.error('Get current user error:', error);
-      // Only log out if it's a 401/403 error (auth failure)
-      // For network errors or other issues, keep the user session
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        logout();
-      }
+      // Don't logout immediately on 401/403 when we already have an API service
+      // with proper token refresh logic - this prevents false logouts
+      // The API interceptor handles token refresh and logout when necessary
       return null;
+    }
+  };
+
+  // Check authentication status without making API calls
+  const checkAuthStatus = () => {
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
+    
+    if (!token || !storedUser) {
+      return { isAuthenticated: false, user: null };
+    }
+    
+    if (isTokenExpired(token)) {
+      // Token is expired, clear it
+      localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
+      return { isAuthenticated: false, user: null };
+    }
+    
+    try {
+      const userData = JSON.parse(storedUser);
+      return { isAuthenticated: true, user: userData };
+    } catch (error) {
+      console.error('Error parsing stored user data:', error);
+      return { isAuthenticated: false, user: null };
     }
   };
 
@@ -143,6 +243,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     getCurrentUser,
+    checkAuthStatus,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

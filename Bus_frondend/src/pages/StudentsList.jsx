@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { apiService } from '../services/api';
-import { formatDate } from '../utils/helpers';
+import { hasPermission } from '../utils/helpers';
+import { PERMISSIONS } from '../utils/constants';
+// formatDate removed (unused)
 import { useAuth } from '../contexts/AuthContext';
 
 const StudentsList = () => {
@@ -14,9 +17,9 @@ const StudentsList = () => {
 
   useEffect(() => {
     fetchStudents();
-  }, [page, searchTerm]);
+  }, [page, searchTerm, fetchStudents]);
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       setLoading(true);
       const params = {
@@ -40,7 +43,7 @@ const StudentsList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchTerm]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this student?')) {
@@ -84,13 +87,13 @@ const StudentsList = () => {
           }}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {user?.role?.id === 1 && (
-          <a
-            href="/admin/students/new"
+        {hasPermission(user, PERMISSIONS.CREATE_STUDENT) && (
+          <Link
+            to="/admin/students/new"
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Add Student
-          </a>
+          </Link>
         )}
       </div>
 
@@ -115,20 +118,20 @@ const StudentsList = () => {
                       </div>
                     </div>
                     <div className="ml-2 flex-shrink-0 space-x-2">
-                      <a
-                        href={`/admin/students/${student.id}`}
+                      <Link
+                        to={`/admin/students/${student.id}`}
                         className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                       >
                         View
-                      </a>
+                      </Link>
                       {user?.role?.id === 1 && (
                         <>
-                          <a
-                            href={`/admin/students/${student.id}/edit`}
+                          <Link
+                            to={`/admin/students/${student.id}/edit`}
                             className="text-green-600 hover:text-green-800 text-sm font-medium"
                           >
                             Edit
-                          </a>
+                          </Link>
                           <button
                             onClick={() => handleDelete(student.id)}
                             className="text-red-600 hover:text-red-800 text-sm font-medium"

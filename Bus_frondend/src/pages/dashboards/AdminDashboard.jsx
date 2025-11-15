@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { formatDate } from '../../utils/helpers';
+// formatDate removed (unused)
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -161,34 +162,34 @@ const AdminDashboard = () => {
       <div className="mt-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <a
-            href="/admin/students"
+          <Link
+            to="/admin/students"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Manage Students</div>
             <div className="text-sm text-gray-500 mt-1">View and manage all students</div>
-          </a>
-          <a
-            href="/admin/buses"
+          </Link>
+          <Link
+            to="/admin/buses"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Manage Buses</div>
             <div className="text-sm text-gray-500 mt-1">View and manage buses</div>
-          </a>
-          <a
-            href="/admin/routes"
+          </Link>
+          <Link
+            to="/admin/routes"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Manage Routes</div>
             <div className="text-sm text-gray-500 mt-1">View and manage routes</div>
-          </a>
-          <a
-            href="/admin/users"
+          </Link>
+          <Link
+            to="/admin/users"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Manage Users</div>
             <div className="text-sm text-gray-500 mt-1">View and manage users</div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

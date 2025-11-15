@@ -1,9 +1,17 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ROLES } from '../utils/constants';
+import { ROLES, STORAGE_KEYS } from '../utils/constants';
+import { useEffect } from 'react';
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const { isAuthenticated, user, loading } = useAuth();
+  const { isAuthenticated, user, loading, logout } = useAuth();
+
+  useEffect(() => {
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    if (!token && isAuthenticated) {
+      logout(true);
+    }
+  }, [isAuthenticated, logout]);
 
   if (loading) {
     return (

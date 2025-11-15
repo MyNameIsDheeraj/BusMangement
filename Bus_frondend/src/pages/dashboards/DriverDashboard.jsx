@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { formatDate } from '../../utils/helpers';
+// formatDate removed (unused)
 
 const DriverDashboard = () => {
   const [route, setRoute] = useState(null);
@@ -164,27 +165,27 @@ const DriverDashboard = () => {
       <div className="mt-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <a
-            href="/driver/attendances"
+          <Link
+            to="/driver/attendances"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Mark Attendance</div>
             <div className="text-sm text-gray-500 mt-1">Mark student attendance</div>
-          </a>
-          <a
-            href="/driver/alerts"
+          </Link>
+          <Link
+            to="/driver/alerts"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">Create Alert</div>
             <div className="text-sm text-gray-500 mt-1">Create alerts for students</div>
-          </a>
-          <a
-            href="/driver/route"
+          </Link>
+          <Link
+            to="/driver/route"
             className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
           >
             <div className="font-medium text-gray-900">View Route</div>
             <div className="text-sm text-gray-500 mt-1">View route details and stops</div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
